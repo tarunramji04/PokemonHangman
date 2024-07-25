@@ -1,9 +1,9 @@
 :root {
-    --dark-blue: rgb(0, 112, 153);
+    --bulbasaur-dark: #378e8e;
 }
 
 body {
-    background-color: var(--dark-blue);
+    background-color: var(--bulbasaur-dark);
 }
 
 .box-container {
@@ -13,7 +13,7 @@ body {
     width: 100%;
     min-height: 100vh;
 }
-  
+
 .box {
     width: 400px;
     height: 400px;
