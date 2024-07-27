@@ -1,17 +1,19 @@
 import { randomPoke } from "../../api"
 import { useState, useEffect } from 'react'
+import Modal from 'react-modal';
 import pokeball from '../../assets/pokeball.svg';
 import pokeballLight from '../../assets/pokeball-light.svg';
 import End from '../End/End'
 import './style.css'
 
 function Game() {
-    const [poke, setPoke] = useState('')
-    const [pokeImage, setPokeImage] = useState('')
+    const [poke, setPoke] = useState('');
+    const [pokeImage, setPokeImage] = useState('');
     const [guessesLeft, setGuessesLeft] = useState(6);
     const [guessedLetters, setGuessedLetters] = useState([]);
     const [gameOver, setGameOver] = useState(false);
-    const [gameWon, setGameWon] = useState(false)
+    const [gameWon, setGameWon] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     useEffect(() => {
         async function getPoke() {
@@ -98,8 +100,33 @@ function Game() {
                     <div className="word"><strong>{word}</strong></div>
                     <div className="pokeballs">{pokeballs}</div>
                     <div className="letters">{buttons}</div>
+                    <div className="hint-button-container">
+                        <button onClick={() => setIsModalOpen(true)}><strong>HINT</strong></button>
+                    </div>
                 </>
             )}
+            <Modal
+                isOpen={isModalOpen}
+                onRequestClose={() => setIsModalOpen(false)}
+                style={{
+                    overlay: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.75)'
+                    },
+                    content: {
+                        top: '50%',
+                        left: '50%',
+                        right: 'auto',
+                        bottom: 'auto',
+                        marginRight: '-50%',
+                        transform: 'translate(-50%, -50%)',
+                        borderRadius: '50%',
+                    }
+                }}>
+                <img 
+                    style={{width: '150px', height: '150px'}}
+                    src={pokeImage}>
+                </img>
+            </Modal>
         </div>
     )
 }

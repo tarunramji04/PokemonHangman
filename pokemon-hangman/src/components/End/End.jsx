@@ -9,10 +9,11 @@ function End(props) {
             </div>
             <img 
                 style={{width: '200px', height: '200px', borderRadius: '10%'}}
-                src={props.img}></img>
+                src={props.img}>
+            </img>
             <div className='end-buttons'>
-                <button><strong>Pokemon Info</strong></button>
-                <button onClick={props.reset}><strong>Play Again</strong></button>
+                <button><strong>POKEMON INFO</strong></button>
+                <button onClick={props.reset}><strong>PLAY AGAIN</strong></button>
             </div>
         </div>
     )
