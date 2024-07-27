@@ -2,10 +2,12 @@ import { randomPoke } from "../../api"
 import { useState, useEffect } from 'react'
 import pokeball from '../../assets/pokeball.svg';
 import pokeballLight from '../../assets/pokeball-light.svg';
+import End from '../End/End'
 import './style.css'
 
 function Game() {
     const [poke, setPoke] = useState('')
+    const [pokeImage, setPokeImage] = useState('')
     const [guessesLeft, setGuessesLeft] = useState(6);
     const [guessedLetters, setGuessedLetters] = useState([]);
     const [gameOver, setGameOver] = useState(false);
@@ -14,8 +16,9 @@ function Game() {
     useEffect(() => {
         async function getPoke() {
             if (!gameOver) {
-                const pokemonName = await randomPoke();
-                setPoke(pokemonName);
+                const {name, image} = await randomPoke();
+                setPoke(name);
+                setPokeImage(image);
             }
         }
         getPoke();
@@ -49,22 +52,26 @@ function Game() {
     })
 
     function handleGuess(letter) {
+        // handle with local variables directly because of async nature of setting state
         if (!guessedLetters.includes(letter)) {
-            setGuessedLetters(prev => [...prev, letter]);
+            const newGuessedLetters = [...guessedLetters, letter];
+            setGuessedLetters(newGuessedLetters);
+            
+            let newGuessesLeft = guessesLeft;
             if (!poke.includes(letter)) {
-                setGuessesLeft(prev => prev - 1)
+                newGuessesLeft = guessesLeft - 1;
+                setGuessesLeft(newGuessesLeft);
             }
-        }
-        checkGameOver();
-    }
-
-    function checkGameOver() {
-        if (guessesLeft === 0) {
-            setGameOver(true);
-        }
-        if (guessedLetters.length === poke.length) {
-            setGameOver(true);
-            setGameWon(true);
+    
+            const allLettersGuessed = poke.split("").every(l => newGuessedLetters.includes(l));
+            
+            if (newGuessesLeft === 0) {
+                setGameOver(true);
+                setGameWon(false);
+            } else if (allLettersGuessed) {
+                setGameOver(true);
+                setGameWon(true);
+            }
         }
     }
 
@@ -76,10 +83,23 @@ function Game() {
     }
 
     return (
-        <div className="box-left">
-            <div className="word"><strong>{word}</strong></div>
-            <div className="pokeballs">{pokeballs}</div>
-            <div className="letters">{buttons}</div>
+        <div className="box" 
+            style={gameOver ? (gameWon ? {backgroundColor: '#98fb98'} : {backgroundColor: '#ff9999'}) : {}}
+        >
+            {gameOver ? (
+                <End
+                    won={gameWon}
+                    poke={poke.toUpperCase()}
+                    reset={resetGame}
+                    img={pokeImage}
+                />
+            ) : (
+                <>
+                    <div className="word"><strong>{word}</strong></div>
+                    <div className="pokeballs">{pokeballs}</div>
+                    <div className="letters">{buttons}</div>
+                </>
+            )}
         </div>
     )
 }

@@ -6,9 +6,6 @@ function App() {
   return (
     <div className="box-container">
         <Game />
-        <div className="box">
-
-        </div>
     </div>
   )
 }
