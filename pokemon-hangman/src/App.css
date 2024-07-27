@@ -4,14 +4,16 @@
 
 body {
     background-color: var(--bulbasaur-dark);
+    font-family: 'Inter', sans-serif;
 }
 
 .box-container {
     display: flex;
     justify-content: space-around;
     align-items: center;
-    width: 100%;
+    width: 90%;
     min-height: 100vh;
+    margin: 0 auto;
 }
 
 .box {
@@ -19,6 +21,12 @@ body {
     height: 400px;
     border-radius: 10%;
     background-color: #f3f3f3; 
+}
+
+@media (max-width: 1200px) {
+    .box-container {
+        width: 100%;
+    }
 }
 
 @media (max-width: 900px) {
