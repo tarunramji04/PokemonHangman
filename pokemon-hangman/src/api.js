@@ -7,7 +7,6 @@ async function randomPoke() {
 
 async function getPokemon(dex_no) {
   const result = await axios.get(`https://pokeapi.co/api/v2/pokemon-species/${dex_no}`)
-  console.log(result)
   const name = result.data.name;
   const image = getPokemonImage(dex_no);
   return {name, image};

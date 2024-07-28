@@ -4,6 +4,7 @@ import Modal from 'react-modal';
 import pokeball from '../../assets/pokeball.svg';
 import pokeballLight from '../../assets/pokeball-light.svg';
 import End from '../End/End'
+import Login from "../Login/Login";
 import './style.css'
 
 function Game() {
@@ -13,7 +14,11 @@ function Game() {
     const [guessedLetters, setGuessedLetters] = useState([]);
     const [gameOver, setGameOver] = useState(false);
     const [gameWon, setGameWon] = useState(false);
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isImageModalOpen, setIsImageModalOpen] = useState(false);
+    const [isLoginModalOpen, setIsLoginModalOpen] = useState(true);
+    const [user, setUser] = useState(null);
+
+    console.log(user)
 
     useEffect(() => {
         async function getPoke() {
@@ -53,6 +58,15 @@ function Game() {
                 </button>
     })
 
+    function handleLogin(username) {
+        setUser(username);
+        setIsLoginModalOpen(false);
+    }
+
+    function handlePlayAsGuest(event) {
+        setIsLoginModalOpen(false);
+    }
+
     function handleGuess(letter) {
         // handle with local variables directly because of async nature of setting state
         if (!guessedLetters.includes(letter)) {
@@ -88,6 +102,12 @@ function Game() {
         <div className="box" 
             style={gameOver ? (gameWon ? {backgroundColor: '#98fb98'} : {backgroundColor: '#ff9999'}) : {}}
         >
+            <Login
+                isOpen={isLoginModalOpen}
+                onRequestClose={() => setIsLoginModalOpen(false)}
+                onLogin={handleLogin}
+                onPlayAsGuest={handlePlayAsGuest}
+            />
             {gameOver ? (
                 <End
                     won={gameWon}
@@ -101,13 +121,13 @@ function Game() {
                     <div className="pokeballs">{pokeballs}</div>
                     <div className="letters">{buttons}</div>
                     <div className="hint-button-container">
-                        <button onClick={() => setIsModalOpen(true)}><strong>HINT</strong></button>
+                        <button onClick={() => setIsImageModalOpen(true)}><strong>HINT</strong></button>
                     </div>
                 </>
             )}
             <Modal
-                isOpen={isModalOpen}
-                onRequestClose={() => setIsModalOpen(false)}
+                isOpen={isImageModalOpen}
+                onRequestClose={() => setIsImageModalOpen(false)}
                 style={{
                     overlay: {
                         backgroundColor: 'rgba(0, 0, 0, 0.75)'
