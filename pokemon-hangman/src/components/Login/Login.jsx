@@ -23,7 +23,7 @@ function Login({isOpen, onRequestClose, onLogin, onPlayAsGuest}) {
 
     let pokeballs = [];
     for (let i = 0; i < 6; i++) {
-        pokeballs.push(<img src={pokeball} style={{width: '15px', height: '15px', margin: '1px'}}></img>)
+        pokeballs.push(<img src={pokeball} style={{width: '20px', height: '20px', margin: '1px'}}></img>)
     }
 
     return (
@@ -42,13 +42,14 @@ function Login({isOpen, onRequestClose, onLogin, onPlayAsGuest}) {
                     bottom: 'auto',
                     marginRight: '-50%',
                     transform: 'translate(-50%, -50%)',
-                    backgroundColor: '#f3f3f3' 
+                    backgroundColor: '#f3f3f3',
+                    borderRadius: '5%'
                 }
             }}>
             {!showCreateAccount ? (
-            <div className="modal-content" style={{height: '400px'}}>
+            <div className="modal-content" style={{height: '440px'}}>
                 <div className='modal-welcome'>
-                    <h2>Welcome to Pokemon Hangman</h2>
+                    <h1>Welcome to Pokemon Hangman</h1>
                     <div>{pokeballs}</div>
                     <div><strong>Login to Collect a Pokedex or Play as a Guest</strong></div>
                 </div>                     
@@ -67,32 +68,31 @@ function Login({isOpen, onRequestClose, onLogin, onPlayAsGuest}) {
                     />
                     <button type="submit"><strong>LOGIN</strong></button>
                 </form>
-                <div>
+                <div className='bottom'>
+                    <div><strong>Don't have an account?</strong></div>
                     <button onClick={() => setShowCreateAccount(true)}><strong>CREATE ACCOUNT</strong></button>
-                </div>
-                <div>
                     <button onClick={onPlayAsGuest}><strong>PLAY AS GUEST</strong></button>
                 </div>
             </div>
             ) : (
-            <div className="modal-content">
-                <h2>Create Account</h2>
+            <div className="modal-content" style={{height: '180px'}}>
+                <h2><strong>CREATE ACCOUNT</strong></h2>
                 <form onSubmit={handleCreateAccount}>
-                <input
-                    type="text"
-                    placeholder="Username"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                />
-                <input
-                    type="password"
-                    placeholder="Password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                />
-                <button type="submit">Create Account</button>
+                    <input
+                        type="text"
+                        placeholder="Username"
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                    />
+                    <input
+                        type="password"
+                        placeholder="Password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                    />
+                    <button type="submit"><strong>CREATE ACCOUNT</strong></button>
                 </form>
-                <button onClick={() => setShowCreateAccount(false)}>Back</button>
+                <button onClick={() => setShowCreateAccount(false)}><strong>BACK</strong></button>
             </div>
             )}
         </Modal>

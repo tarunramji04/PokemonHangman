@@ -1,5 +1,5 @@
 .modal-content {
-    width: 200px;
+    width: 249px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -13,13 +13,20 @@
     gap: 10px;
 }
 
-h2 {
+h1, h2 {
     margin-top: 0;
     margin-bottom: 0;
+    color: #378e8e;
 }
 
-form {
+h1 {
+    font-family: 'Permanent Marker', cursive;
+}
+
+form, .bottom {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    align-items: center;
+    gap: 10px; 
+    width: 100%;
 }
