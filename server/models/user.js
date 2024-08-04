@@ -19,12 +19,13 @@ const userSchema = mongoose.Schema(
     {timestamps: true}
 );
 
-userSchema.methods.generateHash = function(password) {
-    return bcrypt.hashSync(password, bcrypt.genSaltSync(10), null);
-  };
+userSchema.methods.generateHash = async function(password) {
+    const salt = await bcrypt.genSalt(10)
+    return bcrypt.hash(password, salt);
+};
   
-userSchema.methods.checkPassword = function(password) {
-    return bcrypt.compareSync(password, this.password);
+userSchema.methods.checkPassword = async function(password) {
+    return bcrypt.compare(password, this.password);
 };
 
 export const User = mongoose.model('User', userSchema);
