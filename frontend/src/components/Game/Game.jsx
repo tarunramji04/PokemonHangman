@@ -5,6 +5,7 @@ import pokeball from '../../assets/pokeball.svg';
 import pokeballLight from '../../assets/pokeball-light.svg';
 import End from '../End/End'
 import Login from "../Login/Login";
+import Hint from "../Hint/Hint"
 import './style.css'
 
 function Game() {
@@ -125,28 +126,11 @@ function Game() {
                     </div>
                 </>
             )}
-            <Modal
+            <Hint
                 isOpen={isImageModalOpen}
                 onRequestClose={() => setIsImageModalOpen(false)}
-                style={{
-                    overlay: {
-                        backgroundColor: 'rgba(0, 0, 0, 0.75)'
-                    },
-                    content: {
-                        top: '50%',
-                        left: '50%',
-                        right: 'auto',
-                        bottom: 'auto',
-                        marginRight: '-50%',
-                        transform: 'translate(-50%, -50%)',
-                        borderRadius: '50%',
-                    }
-                }}>
-                <img 
-                    style={{width: '150px', height: '150px'}}
-                    src={pokeImage}>
-                </img>
-            </Modal>
+                image={pokeImage}
+            />
         </div>
     )
 }
