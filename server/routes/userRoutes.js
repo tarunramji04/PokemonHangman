@@ -15,7 +15,7 @@ router.post('/', async (req, res) => {
         };
     
         const user = await User.create(newUser);
-        return res.status(201).send(user);
+        return res.status(201).send(user.username);
     } catch(error) {
         console.log(error.message);
         res.status(500).send({"message": error.message});
@@ -47,9 +47,16 @@ router.post('/login', async (req, res) => {
 })
 
 //get a user's guessed list
-router.get('/:username', async (req, res) => {
+router.get('/:username', authenticateToken, async (req, res) => {
     try {
         const {username} = req.params
+
+        console.log(req.user.username)
+
+        if (req.user.name !== username) {
+            return res.status(403).json({ message: "Access denied" });
+        }
+
         const user = await User.findOne({username: username});
         if (!user) {
             return res.status(401).json({message: "User doesn't exist"});
@@ -62,10 +69,14 @@ router.get('/:username', async (req, res) => {
 })
 
 //update user's guessed list
-router.put('/:username', async (req, res) => {
+router.put('/:username', authenticateToken, async (req, res) => {
     try {
         const {username} = req.params
         const {id} = req.body;
+
+        if (req.user.name !== username) {
+            return res.status(403).json({ message: "Access denied" });
+        }
 
         const user = await User.findOne({username: username});
         if (!user) {
@@ -80,5 +91,23 @@ router.put('/:username', async (req, res) => {
         res.status(500).send({message: error.message});
     }
 })
+
+function authenticateToken(req, res, next) {
+    const authHeader = req.headers['authorization']
+    const token = authHeader && authHeader.split(' ')[1]
+
+    if (token == null) {
+        console.log("Null Token")
+        res.sendStatus(401)
+    }
+
+    jwt.verify(token, process.env.JWT_SECRET_KEY, (err, user) => {
+        if (err) {
+            return res.sendStatus(401);
+        }
+        req.user = user
+        next()
+    })
+}
 
 export default router;
