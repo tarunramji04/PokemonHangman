@@ -1,4 +1,6 @@
+import 'dotenv/config';
 import express from 'express';
+import jwt from 'jsonwebtoken'
 import { User } from '../models/user.js';
 
 const router = express.Router();
@@ -33,7 +35,11 @@ router.post('/login', async (req, res) => {
             return res.status(401).json({message: "Incorrect password"});
         }
 
-        return res.status(201).send({message: "login successful"});
+        //payload for JWT
+        const payload = {name : user.username}
+        const accessToken = jwt.sign(payload, process.env.JWT_SECRET_KEY, {expiresIn: 60 * 120})
+
+        return res.status(201).send({token: accessToken});
     } catch(error) {
         console.log(error.message);
         res.status(500).send({message: error.message});
