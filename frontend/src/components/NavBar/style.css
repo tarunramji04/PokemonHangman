@@ -10,12 +10,6 @@
     z-index: 1000;
 }
 
-.nav-menu {
-    position: relative;
-    cursor: pointer;
-    color: white;
-}
-
 .user-circle {
     background-color: var(--bulbasaur-dark);
     color: black;
@@ -34,6 +28,7 @@
     color: var(--bulbasaur-dark);
     margin-right: 20px;
     font-size: 1.4rem;
+    cursor: pointer;
 }
 
 .dropdown-menu {

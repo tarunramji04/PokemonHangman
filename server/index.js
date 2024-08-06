@@ -5,7 +5,7 @@ import userRoute from './routes/userRoutes.js'
 import cors from 'cors';
 
 const app = express();
-const port = process.env.PORT;
+const port = 5000;
 const mongoURL = process.env.MONGO_CONNECTION;
 
 app.use(express.json());

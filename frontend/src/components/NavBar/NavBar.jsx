@@ -1,32 +1,37 @@
 import { useState } from 'react'
 import './style.css'
 
-function NavBar(props) {
+function NavBar({user, isLoggedIn, onClickLogIn, onClickLogOut}) {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-    const toggleMenu = () => {
+    function toggleMenu() {
         setIsMenuOpen(!isMenuOpen);
+    }
+
+    function handleLogOut() {
+        if (localStorage.getItem("token") != null) {
+            localStorage.removeItem("token");
+        }
+        onClickLogOut();
     }
 
     return (
         <div className="nav-bar">
-            <div className="nav-menu" onClick={toggleMenu}>
-                {props.isLoggedIn ? (
-                    <div className="user-circle">
-                        <strong>{props.user.charAt(0)}</strong>
-                    </div>
-                ) : (
-                    <div className="login-button" onClick={props.onClickLogIn}>
-                        <strong>Log In</strong>
-                    </div>
-                )}
-            </div>
-            {isMenuOpen && props.isLoggedIn && (
+            {isLoggedIn ? (
+                <div className="user-circle" onClick={toggleMenu}>
+                    <strong>{user.charAt(0)}</strong>
+                </div>
+            ) : (
+                <div className="login-button" onClick={onClickLogIn}>
+                    <strong>Log In</strong>
+                </div>
+            )}
+            {isMenuOpen && isLoggedIn && (
                 <div className="dropdown-menu">
                     <div className="dropdown-item">
                         <strong>Pokedex</strong>
                     </div>
-                    <div className="dropdown-item" onClick={props.onClickLogOut}>
+                    <div className="dropdown-item" onClick={handleLogOut}>
                         <strong>Log Out</strong>
                     </div>
                 </div>

@@ -51,22 +51,19 @@ router.post('/login', async (req, res) => {
     }
 })
 
-//get a user's guessed list
-router.get('/:username', authenticateToken, async (req, res) => {
+//get a user's info from token
+router.get('/info', authenticateToken, async (req, res) => {
     try {
-        const {username} = req.params
-
-        console.log(req.user.username)
-
-        if (req.user.name !== username) {
-            return res.status(403).json({ message: "Access denied" });
-        }
+        const username = req.user.name;
 
         const user = await User.findOne({username: username});
         if (!user) {
-            return res.status(401).json({message: "User doesn't exist"});
+            return res.status(404).json({message: "User doesn't exist"});
         }
-        return res.status(201).send(user.guessedPokemon);
+        return res.status(200).json({
+            username: user.username,
+            guessedPokemon: user.guessedPokemon
+        });
     } catch(error) {
         console.log(error.message);
         res.status(500).send({message: error.message});
@@ -74,23 +71,19 @@ router.get('/:username', authenticateToken, async (req, res) => {
 })
 
 //update user's guessed list
-router.put('/:username', authenticateToken, async (req, res) => {
+router.put('/update', authenticateToken, async (req, res) => {
     try {
-        const {username} = req.params
+        const username = req.user.name;
         const {id} = req.body;
-
-        if (req.user.name !== username) {
-            return res.status(403).json({ message: "Access denied" });
-        }
 
         const user = await User.findOne({username: username});
         if (!user) {
-            return res.status(401).json({message: "User doesn't exist"});
+            return res.status(404).json({message: "User doesn't exist"});
         }
         user.guessedPokemon.addToSet(id);
         await user.save();
 
-        return res.status(201).send(user.guessedPokemon);
+        return res.status(200).json(user.guessedPokemon);
     } catch(error) {
         console.log(error.message);
         res.status(500).send({message: error.message});

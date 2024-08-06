@@ -1,5 +1,6 @@
 import Modal from 'react-modal';
 import pokeball from '../../assets/pokeball.svg';
+import { createUser, loginUser } from '../../backendApi'
 import { useState, useEffect } from 'react'
 import './style.css'
 
@@ -17,14 +18,19 @@ function Login({isOpen, onRequestClose, onLogin, onPlayAsGuest}) {
         }
     }, [isOpen]);
   
-    function handleLogin(event) {
+    //just take care of all xception handling in backendApi file
+    async function handleLogin(event) {
         event.preventDefault();
+        const {token} = await loginUser(username, password);
+        localStorage.setItem("token", token);
         console.log('Logging in with', username, password);
         onLogin(username);
     };
   
-    function handleCreateAccount(event) {
+    async function handleCreateAccount(event) {
         event.preventDefault();
+        const {token} = await createUser(createUsername, createPassowrd);
+        localStorage.setItem("token", token);
         console.log('Created account with', createUsername, createPassowrd);
         //creating account auto logs in user
         onLogin(createUsername);

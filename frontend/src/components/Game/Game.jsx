@@ -1,6 +1,6 @@
 import { randomPoke } from "../../api"
 import { useState, useEffect } from 'react'
-import Modal from 'react-modal';
+import { getUserData } from '../../backendApi'
 import pokeball from '../../assets/pokeball.svg';
 import pokeballLight from '../../assets/pokeball-light.svg';
 import End from '../End/End'
@@ -21,8 +21,6 @@ function Game() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [user, setUser] = useState(null);
 
-    console.log(user)
-
     useEffect(() => {
         async function getPoke() {
             if (!gameOver && !isLoginModalOpen) {
@@ -33,6 +31,14 @@ function Game() {
         }
         getPoke();
     }, [gameOver, isLoginModalOpen]);
+
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            fetchUserData(token);
+        }
+        console.log(user)
+    }, []);
 
     const word = poke.split("").map(letter => {
         return guessedLetters.includes(letter) ? letter.toUpperCase() : '_';
@@ -60,6 +66,17 @@ function Game() {
                     <strong>{letter}</strong>
                 </button>
     })
+
+    async function fetchUserData(token) {
+        const userInfo = await getUserData(token);
+        if (userInfo) {
+            setUser(userInfo.username);
+            setIsLoggedIn(true);
+            setIsLoginModalOpen(false);
+        } else {
+            localStorage.removeItem('token');
+        }
+    }
 
     function handleLogin(username) {
         setUser(username);
