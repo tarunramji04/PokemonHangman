@@ -5,14 +5,7 @@
 body {
     background-color: var(--bulbasaur-dark);
     font-family: 'Inter', sans-serif;
-}
-
-.box-container {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    min-height: 100vh;
-    margin: 0 auto;
+    margin: 0px;
 }
 
 button, input {

@@ -1,6 +1,6 @@
 import Modal from 'react-modal';
 import pokeball from '../../assets/pokeball.svg';
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import './style.css'
 
 
@@ -8,6 +8,14 @@ function Login({isOpen, onRequestClose, onLogin, onPlayAsGuest}) {
     const [showCreateAccount, setShowCreateAccount] = useState(false);
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [createUsername, setCreateUserName] = useState('');
+    const [createPassowrd, setCreatePassword] = useState('');
+
+    useEffect(() => {
+        if (isOpen) {
+            resetInputs();
+        }
+    }, [isOpen]);
   
     function handleLogin(event) {
         event.preventDefault();
@@ -17,9 +25,18 @@ function Login({isOpen, onRequestClose, onLogin, onPlayAsGuest}) {
   
     function handleCreateAccount(event) {
         event.preventDefault();
-        console.log('Created account with', username, password);
-        onLogin(username);
+        console.log('Created account with', createUsername, createPassowrd);
+        //creating account auto logs in user
+        onLogin(createUsername);
     };
+
+    function resetInputs() {
+        setUsername('');
+        setPassword('');
+        setCreateUserName('');
+        setCreatePassword('');
+        setShowCreateAccount(false);
+    }
 
     let pokeballs = [];
     for (let i = 0; i < 6; i++) {
@@ -81,14 +98,14 @@ function Login({isOpen, onRequestClose, onLogin, onPlayAsGuest}) {
                     <input
                         type="text"
                         placeholder="Username"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
+                        value={createUsername}
+                        onChange={(e) => setCreateUserName(e.target.value)}
                     />
                     <input
                         type="password"
                         placeholder="Password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
+                        value={createPassowrd}
+                        onChange={(e) => setCreatePassword(e.target.value)}
                     />
                     <button type="submit"><strong>CREATE ACCOUNT</strong></button>
                 </form>

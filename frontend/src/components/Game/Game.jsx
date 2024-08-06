@@ -6,6 +6,7 @@ import pokeballLight from '../../assets/pokeball-light.svg';
 import End from '../End/End'
 import Login from "../Login/Login";
 import Hint from "../Hint/Hint"
+import NavBar from "../NavBar/NavBar"
 import './style.css'
 
 function Game() {
@@ -17,20 +18,21 @@ function Game() {
     const [gameWon, setGameWon] = useState(false);
     const [isImageModalOpen, setIsImageModalOpen] = useState(false);
     const [isLoginModalOpen, setIsLoginModalOpen] = useState(true);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [user, setUser] = useState(null);
 
     console.log(user)
 
     useEffect(() => {
         async function getPoke() {
-            if (!gameOver) {
+            if (!gameOver && !isLoginModalOpen) {
                 const {name, image} = await randomPoke();
                 setPoke(name);
                 setPokeImage(image);
             }
         }
         getPoke();
-    }, [gameOver]);
+    }, [gameOver, isLoginModalOpen]);
 
     const word = poke.split("").map(letter => {
         return guessedLetters.includes(letter) ? letter.toUpperCase() : '_';
@@ -61,11 +63,21 @@ function Game() {
 
     function handleLogin(username) {
         setUser(username);
+        setIsLoggedIn(true);
         setIsLoginModalOpen(false);
+        resetGame();
     }
 
-    function handlePlayAsGuest(event) {
+    function handleLogOut() {
+        setUser(null);
+        setIsLoggedIn(false);
+        setIsLoginModalOpen(true);
+        resetGame();
+    }
+
+    function handlePlayAsGuest() {
         setIsLoginModalOpen(false);
+        resetGame();
     }
 
     function handleGuess(letter) {
@@ -100,32 +112,44 @@ function Game() {
     }
 
     return (
-        <div className="box" 
-            style={gameOver ? (gameWon ? {backgroundColor: '#98fb98'} : {backgroundColor: '#ff9999'}) : {}}
-        >
+        <div className='page-container'>
+            {!isLoginModalOpen &&<div>
+                <NavBar
+                    user={isLoggedIn ? user : 'Guest'}
+                    isLoggedIn={isLoggedIn}
+                    onClickLogIn={() => setIsLoginModalOpen(true)}
+                    onClickLogOut={handleLogOut}
+                />
+            </div>}
+            {!isLoginModalOpen && <div className="content-container">
+                <div className="box" 
+                    style={gameOver ? (gameWon ? {backgroundColor: '#98fb98'} : {backgroundColor: '#ff9999'}) : {}}
+                >
+                    {gameOver ? (
+                        <End
+                            won={gameWon}
+                            poke={poke.toUpperCase()}
+                            reset={resetGame}
+                            img={pokeImage}
+                        />
+                    ) : (
+                        <>
+                            <div className="word"><strong>{word}</strong></div>
+                            <div className="pokeballs">{pokeballs}</div>
+                            <div className="letters">{buttons}</div>
+                            <div className="hint-button-container">
+                                <button onClick={() => setIsImageModalOpen(true)}><strong>HINT</strong></button>
+                            </div>
+                        </>
+                    )}
+                </div>
+            </div>}
             <Login
                 isOpen={isLoginModalOpen}
                 onRequestClose={() => setIsLoginModalOpen(false)}
                 onLogin={handleLogin}
                 onPlayAsGuest={handlePlayAsGuest}
             />
-            {gameOver ? (
-                <End
-                    won={gameWon}
-                    poke={poke.toUpperCase()}
-                    reset={resetGame}
-                    img={pokeImage}
-                />
-            ) : (
-                <>
-                    <div className="word"><strong>{word}</strong></div>
-                    <div className="pokeballs">{pokeballs}</div>
-                    <div className="letters">{buttons}</div>
-                    <div className="hint-button-container">
-                        <button onClick={() => setIsImageModalOpen(true)}><strong>HINT</strong></button>
-                    </div>
-                </>
-            )}
             <Hint
                 isOpen={isImageModalOpen}
                 onRequestClose={() => setIsImageModalOpen(false)}
