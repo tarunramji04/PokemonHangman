@@ -9,7 +9,7 @@ async function getPokemon(dex_no) {
   const result = await axios.get(`https://pokeapi.co/api/v2/pokemon-species/${dex_no}`)
   const name = result.data.name;
   const image = getPokemonImage(dex_no);
-  return {name, image};
+  return {name, image, dex_no};
 }
 
 function getPokemonImage(dex_no) {

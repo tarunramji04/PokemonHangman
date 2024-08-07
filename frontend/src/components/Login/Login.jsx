@@ -18,7 +18,7 @@ function Login({isOpen, onRequestClose, onLogin, onPlayAsGuest}) {
         }
     }, [isOpen]);
   
-    //just take care of all xception handling in backendApi file
+    //just take care of all exception handling in backendApi file
     async function handleLogin(event) {
         event.preventDefault();
         const {token} = await loginUser(username, password);

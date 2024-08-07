@@ -1,6 +1,6 @@
 import { randomPoke } from "../../api"
 import { useState, useEffect } from 'react'
-import { getUserData } from '../../backendApi'
+import { getUserData, updateGuessed } from '../../backendApi'
 import pokeball from '../../assets/pokeball.svg';
 import pokeballLight from '../../assets/pokeball-light.svg';
 import End from '../End/End'
@@ -12,6 +12,7 @@ import './style.css'
 function Game() {
     const [poke, setPoke] = useState('');
     const [pokeImage, setPokeImage] = useState('');
+    const [dexNo, setDexNo] = useState(0);
     const [guessesLeft, setGuessesLeft] = useState(6);
     const [guessedLetters, setGuessedLetters] = useState([]);
     const [gameOver, setGameOver] = useState(false);
@@ -24,9 +25,10 @@ function Game() {
     useEffect(() => {
         async function getPoke() {
             if (!gameOver && !isLoginModalOpen) {
-                const {name, image} = await randomPoke();
+                const {name, image, dex_no} = await randomPoke();
                 setPoke(name);
                 setPokeImage(image);
+                setDexNo(dex_no);
             }
         }
         getPoke();
@@ -50,7 +52,7 @@ function Game() {
             {width: '20px', height: '20px', margin: '1px'}}></img>)
     }
 
-    const buttons = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("").map(letter => {
+    const buttons = "ABCDEFGHIJKLMNOPQRSTUVWXYZ-2".split("").map(letter => {
         return <button 
                     key={letter}
                     onClick={() => handleGuess(letter.toLowerCase())}
@@ -75,6 +77,17 @@ function Game() {
             setIsLoginModalOpen(false);
         } else {
             localStorage.removeItem('token');
+            setIsLoggedIn(false);
+            setIsLoginModalOpen(true);
+        }
+    }
+
+    async function updateUserGuessed(token, id) {
+        const response = await updateGuessed(token, id);
+        if (!response) {
+            localStorage.removeItem('token');
+            setIsLoggedIn(false);
+            setIsLoginModalOpen(true);
         }
     }
 
@@ -97,7 +110,7 @@ function Game() {
         resetGame();
     }
 
-    function handleGuess(letter) {
+    async function handleGuess(letter) {
         // handle with local variables directly because of async nature of setting state
         if (!guessedLetters.includes(letter)) {
             const newGuessedLetters = [...guessedLetters, letter];
@@ -117,6 +130,7 @@ function Game() {
             } else if (allLettersGuessed) {
                 setGameOver(true);
                 setGameWon(true);
+                await updateUserGuessed(localStorage.getItem('token'), dexNo);
             }
         }
     }
