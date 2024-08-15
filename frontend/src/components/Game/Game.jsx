@@ -4,7 +4,7 @@ import { getUserData, updateGuessed } from '../../backendApi'
 import pokeball from '../../assets/pokeball.svg';
 import pokeballLight from '../../assets/pokeball-light.svg';
 import End from '../End/End'
-import Login from "../Login/Login";
+import Login from "../Login/Login"
 import Hint from "../Hint/Hint"
 import NavBar from "../NavBar/NavBar"
 import './style.css'
@@ -21,11 +21,12 @@ function Game() {
     const [isLoginModalOpen, setIsLoginModalOpen] = useState(true);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [user, setUser] = useState(null);
+    const [guessedPokes, setGuessedPokes] = useState([]);
 
     useEffect(() => {
         async function getPoke() {
             if (!gameOver && !isLoginModalOpen) {
-                const {name, image, dex_no} = await randomPoke();
+                const {name, image, dex_no} = await randomPoke(guessedPokes);
                 setPoke(name);
                 setPokeImage(image);
                 setDexNo(dex_no);
@@ -73,8 +74,10 @@ function Game() {
         const userInfo = await getUserData(token);
         if (userInfo) {
             setUser(userInfo.username);
+            setGuessedPokes(userInfo.guessedPokemon);
             setIsLoggedIn(true);
             setIsLoginModalOpen(false);
+
         } else {
             localStorage.removeItem('token');
             setIsLoggedIn(false);
@@ -83,11 +86,15 @@ function Game() {
     }
 
     async function updateUserGuessed(token, id) {
-        const response = await updateGuessed(token, id);
-        if (!response) {
-            localStorage.removeItem('token');
-            setIsLoggedIn(false);
-            setIsLoginModalOpen(true);
+        if (isLoggedIn) {
+            const response = await updateGuessed(token, id);
+            if (!response) {
+                localStorage.removeItem('token');
+                setIsLoggedIn(false);
+                setIsLoginModalOpen(true);
+            } else {
+                setGuessedPokes(response);
+            }
         }
     }
 
@@ -96,10 +103,12 @@ function Game() {
         setIsLoggedIn(true);
         setIsLoginModalOpen(false);
         resetGame();
+        fetchUserData(localStorage.getItem('token'));
     }
 
     function handleLogOut() {
         setUser(null);
+        setGuessedPokes([]);
         setIsLoggedIn(false);
         setIsLoginModalOpen(true);
         resetGame();
@@ -150,6 +159,7 @@ function Game() {
                     isLoggedIn={isLoggedIn}
                     onClickLogIn={() => setIsLoginModalOpen(true)}
                     onClickLogOut={handleLogOut}
+                    guessed={guessedPokes}
                 />
             </div>}
             {!isLoginModalOpen && <div className="content-container">

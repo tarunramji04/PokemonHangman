@@ -1,11 +1,19 @@
 import { useState } from 'react'
+import Modal from 'react-modal';
+import Pokedex from "../Pokedex/Pokedex"
 import './style.css'
 
-function NavBar({user, isLoggedIn, onClickLogIn, onClickLogOut}) {
+function NavBar({user, isLoggedIn, onClickLogIn, onClickLogOut, guessed}) {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [isPokedexOpen, setIsPokedexOpen] = useState(false);
 
     function toggleMenu() {
         setIsMenuOpen(!isMenuOpen);
+    }
+
+    function togglePokedex() {
+        setIsPokedexOpen(true);
+        setIsMenuOpen(false);
     }
 
     function handleLogOut() {
@@ -26,9 +34,9 @@ function NavBar({user, isLoggedIn, onClickLogIn, onClickLogOut}) {
                     <strong>Log In</strong>
                 </div>
             )}
-            {isMenuOpen && isLoggedIn && (
+            {isMenuOpen && (
                 <div className="dropdown-menu">
-                    <div className="dropdown-item">
+                    <div className="dropdown-item" onClick={togglePokedex}>
                         <strong>Pokedex</strong>
                     </div>
                     <div className="dropdown-item" onClick={handleLogOut}>
@@ -36,6 +44,12 @@ function NavBar({user, isLoggedIn, onClickLogIn, onClickLogOut}) {
                     </div>
                 </div>
             )}
+            <Pokedex
+                user={user}
+                numbers={guessed}
+                isOpen={isPokedexOpen}
+                onRequestClose={() => setIsPokedexOpen(false)}
+            />
         </div>
     )
 }

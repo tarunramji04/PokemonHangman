@@ -21,10 +21,14 @@ function Login({isOpen, onRequestClose, onLogin, onPlayAsGuest}) {
     //just take care of all exception handling in backendApi file
     async function handleLogin(event) {
         event.preventDefault();
-        const {token} = await loginUser(username, password);
-        localStorage.setItem("token", token);
-        console.log('Logging in with', username, password);
-        onLogin(username);
+        try {
+            const {token} = await loginUser(username, password);
+            localStorage.setItem("token", token);
+            console.log('Logging in with', username, password);
+            onLogin(username);
+        } catch(error) {
+            console.log(error);
+        }
     };
   
     async function handleCreateAccount(event) {
